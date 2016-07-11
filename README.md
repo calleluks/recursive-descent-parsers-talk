@@ -6,4 +6,4 @@ The code and slides from a talk I gave on recursive descent parsers.
 
 The talk was recorded and is available on [YouTube].
 
-[YouTube]: https://www.youtube.com/watch?v=_F-eh66zw90
+[YouTube]: https://youtu.be/_F-eh66zw90
