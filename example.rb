@@ -25,7 +25,7 @@ class Parser < Parslet::Parser
  end
 
  rule :operator do
-   addition | multiplication
+   addition | multiplication | division
  end
 
  rule :addition do
@@ -35,6 +35,11 @@ class Parser < Parslet::Parser
  rule :multiplication do
    str("*").as(:multiplication)
  end
+
+ rule :division do
+   str("/").as(:division)
+ end
+
 end
 
 IntegerLiteral = Struct.new(:string) do
@@ -48,6 +53,13 @@ Multiplication = Struct.new(:left, :right) do
     left.eval * right.eval
   end
 end
+
+Division = Struct.new(:left, :right) do
+  def eval
+    left.eval / right.eval
+  end
+end
+
 
 Addition = Struct.new(:left, :right) do
   def eval
@@ -64,6 +76,11 @@ class Transform < Parslet::Transform
     Multiplication
   end
 
+  rule division: simple(:addition) do
+    Division
+  end
+
+
   rule addition: simple(:addition) do
     Addition
   end
@@ -78,7 +95,9 @@ class Transform < Parslet::Transform
 end
 
 parser = Parser.new
-tree = p parser.parse("1 + 2 * 3")
+#tree = p parser.parse("1 + 2 * 3")
+#tree = p parser.parse("1 + 2 / 1 * 3 + 4")
+tree = p parser.parse("3 * 4 / 2 / 2")
 transform = Transform.new
 ast = p transform.apply(tree)
 p ast.eval
